@@ -1,0 +1,26 @@
+{
+  "name": "discord-scheduler",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "imkimdol <kimdol@proton.me>",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.15.2",
+    "dotenv": "^16.4.5",
+    "glob": "^10.3.16",
+    "sqlite3": "^5.1.7",
+    "uuid": "^9.0.1"
+  },
+  "scripts": {
+    "compile": "tsc",
+    "deploy": "node dist/scripts/deployCommands.js",
+    "start": "pm2 start dist/index.js --log pm2log.txt",
+    "start-runtime": "pm2-runtime dist/index.js"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^18.2.4",
+    "@types/node": "^20.12.12",
+    "@types/uuid": "^9.0.8",
+    "typescript": "^5.4.5"
+  }
+}
