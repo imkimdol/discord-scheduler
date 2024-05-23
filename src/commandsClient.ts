@@ -7,4 +7,4 @@ export default class CommandsClient extends Client {
         super(options);
         this.commands = commands;
     }
-}
+};
