@@ -3,7 +3,7 @@ import CommandsClient from '../commandsClient';
 import SchedulerEvent from '../model/event';
 import Scheduler from '../scheduler';
 import * as EventHelper from '../helpers/eventHelper';
-import ExtendedUser from '../model/extendedUser';
+import UserWrapper from '../model/userWrapper';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -26,7 +26,7 @@ module.exports = {
         const attendeesString = interaction.options.getString('attendees') ?? '';
         
         try {
-            const user = new ExtendedUser(interaction.user);
+            const user = new UserWrapper(interaction.user);
             const attendees = await attendeesStringToSchedulerUserArray(attendeesString, client);
             const event = new SchedulerEvent(name, user, attendees);
 
@@ -42,15 +42,15 @@ module.exports = {
     }
 };
 
-const attendeesStringToSchedulerUserArray = async (attendeesString: string, client: CommandsClient): Promise<ExtendedUser[]> => {
-    const attendees = [] as ExtendedUser[];
+const attendeesStringToSchedulerUserArray = async (attendeesString: string, client: CommandsClient): Promise<UserWrapper[]> => {
+    const attendees = [] as UserWrapper[];
 
     for (const attendeeString of attendeesString.replace(' ', '').split(',')) {
-        if (ExtendedUser.mentionRegex.test(attendeeString)) {
+        if (UserWrapper.mentionRegex.test(attendeeString)) {
             const attendeeId = attendeeString.substring(2, attendeeString.length-1);
             console.log(attendeeId);
             const user = await client.users.fetch(attendeeId) as User;
-            const extendedUser = new ExtendedUser(user);
+            const extendedUser = new UserWrapper(user);
             attendees.push(extendedUser);
         }
     }

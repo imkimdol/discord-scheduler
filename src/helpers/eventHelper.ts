@@ -1,8 +1,8 @@
 import { EmbedBuilder, User } from "discord.js";
 import SchedulerEvent from "../model/event";
-import ExtendedUser from "../model/extendedUser";
+import UserWrapper from "../model/userWrapper";
 
-const attendeesArrayToString = (attendees: ReadonlyArray<ExtendedUser>): string => {
+const attendeesArrayToString = (attendees: ReadonlyArray<UserWrapper>): string => {
     if (attendees.length === 0) return 'None';
     
     let result = '';
