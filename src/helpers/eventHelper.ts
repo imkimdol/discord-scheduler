@@ -1,13 +1,13 @@
 import { EmbedBuilder, User } from "discord.js";
 import SchedulerEvent from "../model/event";
-import UserHelper from "./userHelper";
+import ExtendedUser from "../model/extendedUser";
 
-const attendeesArrayToString = (attendees: ReadonlyArray<User>): string => {
+const attendeesArrayToString = (attendees: ReadonlyArray<ExtendedUser>): string => {
     if (attendees.length === 0) return 'None';
     
     let result = '';
     for (const attendee of attendees) {
-        result += UserHelper.toMention(attendee.id);
+        result += attendee.toMention();
         result += ', ';
     }
     result = result.substring(0, result.length-2);

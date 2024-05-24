@@ -2,8 +2,8 @@ import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, User } 
 import CommandsClient from '../commandsClient';
 import SchedulerEvent from '../model/event';
 import Scheduler from '../scheduler';
-import UserHelper from '../helpers/userHelper';
 import * as EventHelper from '../helpers/eventHelper';
+import ExtendedUser from '../model/extendedUser';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -26,7 +26,7 @@ module.exports = {
         const attendeesString = interaction.options.getString('attendees') ?? '';
         
         try {
-            const user = interaction.user as User;
+            const user = new ExtendedUser(interaction.user);
             const attendees = await attendeesStringToSchedulerUserArray(attendeesString, client);
             const event = new SchedulerEvent(name, user, attendees);
 
@@ -42,15 +42,16 @@ module.exports = {
     }
 };
 
-const attendeesStringToSchedulerUserArray = async (attendeesString: string, client: CommandsClient): Promise<User[]> => {
-    const attendees = [] as User[];
+const attendeesStringToSchedulerUserArray = async (attendeesString: string, client: CommandsClient): Promise<ExtendedUser[]> => {
+    const attendees = [] as ExtendedUser[];
 
     for (const attendeeString of attendeesString.replace(' ', '').split(',')) {
-        if (UserHelper.mentionRegex.test(attendeeString)) {
+        if (ExtendedUser.mentionRegex.test(attendeeString)) {
             const attendeeId = attendeeString.substring(2, attendeeString.length-1);
             console.log(attendeeId);
             const user = await client.users.fetch(attendeeId) as User;
-            attendees.push(user);
+            const extendedUser = new ExtendedUser(user);
+            attendees.push(extendedUser);
         }
     }
 
