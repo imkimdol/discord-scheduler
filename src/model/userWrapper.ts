@@ -7,20 +7,20 @@ export default class UserWrapper {
     static readonly mentionRegex: RegExp = /<@\d+>/;
 
     private _user: User;
-    private _zone: NullableString;
+    private _timezone: NullableString;
 
     public get user(): User { return this._user; };
     public get id(): string { return this._user.id; };
-    public get zone(): NullableString { return this._zone; };
+    public get timezone(): NullableString { return this._timezone; };
 
     private set user(value: User) { this._user = value; };
-    private set zone(value: string) {
-        if (moment.tz.names().includes(value)) this._zone = value;
+    public set timezone(value: string) {
+        if (moment.tz.names().includes(value)) this._timezone = value;
     };
 
     constructor(user: User) {
         this._user = user;
-        this._zone = null;
+        this._timezone = null;
     }
 
     toMention(): string {

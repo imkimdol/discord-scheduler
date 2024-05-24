@@ -22,11 +22,16 @@ module.exports = {
     async execute(interaction: ChatInputCommandInteraction, client: CommandsClient) {
         await interaction.deferReply({ ephemeral: true });
 
-        const name = interaction.options.getString('name') ?? 'Unnamed Event';
-        const attendeesString = interaction.options.getString('attendees') ?? '';
-        
         try {
             const user = new UserWrapper(interaction.user);
+            if (!user.timezone) {
+                await interaction.editReply('You have no timezone set. Please set a timezone.');
+                return;
+            }
+            
+            const name = interaction.options.getString('name') ?? 'Unnamed Event';
+            const attendeesString = interaction.options.getString('attendees') ?? '';
+            
             const attendees = await attendeesStringToSchedulerUserArray(attendeesString, client);
             const event = new SchedulerEvent(name, user, attendees);
 
