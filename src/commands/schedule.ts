@@ -38,7 +38,6 @@ module.exports = {
             const embed = EventHelper.createEventEmbed(event);
             const message = await interaction.channel?.send({ embeds: [embed] });
             if (message) event.message = message;
-            Scheduler.instance.addEvent(event);
 
             interaction.editReply('Created new event.');
         } catch (err) {

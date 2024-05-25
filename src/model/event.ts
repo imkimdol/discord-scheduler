@@ -3,6 +3,7 @@ import SuggestedTime from './suggestedTime';
 import { Message } from 'discord.js';
 import UserWrapper from './userWrapper';
 import { Moment } from 'moment-timezone';
+import Scheduler from '../scheduler';
  
 type NullableMoment = Moment | null;
 type NullableMessage = Message | null;
@@ -27,7 +28,6 @@ export default class SchedulerEvent {
     private set id(value: string) { this._id = value; };
     private set name(value: string) { this._name = value; };
     private set organizer(value: UserWrapper) { this._organizer = value; };
-    private set attendees(value: UserWrapper[]) { this._attendees = value; };
     private set suggestedTimes(value: SuggestedTime[]) { this._suggestedTimes = value; };
     private set chosenTime(value: Moment) { this._chosenTime = value; };
 
@@ -38,7 +38,16 @@ export default class SchedulerEvent {
         this._attendees = attendees;
         this._suggestedTimes = [];
         this._chosenTime = null;
-        
         this.message = null;
+
+        Scheduler.instance.addEvent(this);
+        this.organizer.addOrganizingEvent(this);
+        this.attendees.map(a => a.addAttendingEvent(this));
+    };
+
+    delete() {
+        Scheduler.instance.removeEvent(this);
+        this.organizer.removeOrganizingEvent(this);
+        this.attendees.map(a => a.removeAttendingEvent(this));
     };
 };
