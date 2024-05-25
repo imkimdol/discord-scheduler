@@ -23,7 +23,7 @@ module.exports = {
         await interaction.deferReply({ ephemeral: true });
 
         try {
-            const user = new UserWrapper(interaction.user);
+            const user = Scheduler.instance.getUser(interaction.user);
             if (!user.timezone) {
                 await interaction.editReply('You have no timezone set. Please set a timezone.');
                 return;

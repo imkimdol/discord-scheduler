@@ -2,6 +2,7 @@ import { SlashCommandBuilder, ChatInputCommandInteraction, AutocompleteInteracti
 import CommandsClient from '../commandsClient';
 import moment from 'moment-timezone';
 import UserWrapper from '../model/userWrapper';
+import Scheduler from '../scheduler';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -34,7 +35,7 @@ module.exports = {
         await interaction.deferReply({ ephemeral: true });
 
         try {
-            const user = new UserWrapper(interaction.user);
+            const user = Scheduler.instance.getUser(interaction.user);
 
             const timezone = interaction.options.getString('timezone') ?? '';
             user.timezone = timezone;

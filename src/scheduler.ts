@@ -1,8 +1,11 @@
+import { User } from 'discord.js';
 import SchedulerEvent from './model/event';
+import UserWrapper from './model/userWrapper';
 
 export default class Scheduler {
     private static _instance: Scheduler;
     private events: { [key: string]: SchedulerEvent };
+    private users: { [key: string]: UserWrapper };
 
     public static get instance(): Scheduler {
         if (!Scheduler._instance) {
@@ -16,6 +19,7 @@ export default class Scheduler {
 
     private constructor() {
         this.events = {};
+        this.users = {};
     };
 
     addEvent(event: SchedulerEvent): void {
@@ -26,5 +30,18 @@ export default class Scheduler {
     };
     getEvent(event: SchedulerEvent): SchedulerEvent {
         return this.events[event.id];
+    };
+    addUser(user: UserWrapper): void {
+        this.users[user.id] = user;
+    };
+    getUser(user: User): UserWrapper {
+        let userWrapper = this.users[user.id];
+
+        if (!userWrapper) {
+            userWrapper = new UserWrapper(user);
+            this.addUser(userWrapper);
+        }
+
+        return userWrapper;
     };
 };
