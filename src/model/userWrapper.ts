@@ -22,7 +22,8 @@ export default class UserWrapper {
 
     private set user(value: User) { this._user = value; };
     public set timezone(value: string) {
-        if (moment.tz.names().includes(value)) this._timezone = value;
+        if (!moment.tz.names().includes(value)) throw new Error('Invalid timezone.');
+        this._timezone = value;
     };
 
     constructor(user: User) {

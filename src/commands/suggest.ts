@@ -42,7 +42,7 @@ module.exports = {
             );
         },
     async execute(interaction: ChatInputCommandInteraction, client: CommandsClient) {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply();
 
         try {
             const user = Scheduler.instance.getUser(interaction.user);

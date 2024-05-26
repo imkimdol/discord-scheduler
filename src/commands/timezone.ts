@@ -36,9 +36,14 @@ module.exports = {
 
         try {
             const user = Scheduler.instance.getUser(interaction.user);
-
             const timezone = interaction.options.getString('timezone') ?? '';
-            user.timezone = timezone;
+
+            try {
+                user.timezone = timezone;
+            } catch {
+                interaction.editReply('Invalid timezone.');
+                return;
+            }
 
             interaction.editReply(`Timezone set to \`${timezone}\`.`);
         } catch (err) {
