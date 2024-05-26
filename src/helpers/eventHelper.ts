@@ -44,19 +44,18 @@ export const createEventEmbed = (event: SchedulerEvent, user: UserWrapper): Embe
     const embed = new EmbedBuilder();
 
     const attendees = 'Attendees: ' + attendeesArrayToString(event.attendees);
-    let timeInstructions = '';
     let chosenTime = '';
     if (!event.chosenTime) {
-        timeInstructions = 'Time is currently undecided. Use /suggest to suggest a time or /vote to vote for a suggested time.\n';
+        const timeInstructions = 'Time is currently undecided. Use /suggest to suggest a time or /vote to vote for a suggested time. Organizers can choose a time with /choose.';
+        embed.setFooter({ text: timeInstructions });
     } else {
-        chosenTime = `\nTime is set to \`${momentToSimpleString(event.chosenTime, user.timezone)}\``;
+        chosenTime = `\nTime is set to \`${momentToSimpleString(event.chosenTime, user.timezone)}\`.`;
     }
     const description = `An event organized by <@${event.organizer.id}>.${chosenTime}\n${attendees}`;
 
     embed.setTitle(event.name);
     embed.setDescription(description);
     embed.setFields(suggestedTimesToFields(event.suggestedTimes, user.timezone));
-    embed.setFooter({ text: timeInstructions });
 
     return embed;
 };
@@ -67,10 +66,31 @@ export const eventStringOption = (option: SlashCommandStringOption) => {
         .setAutocomplete(true)
 };
 
+// TODO merge duplicated functionality into one function
 export const eventAutocomplete = async (interaction: AutocompleteInteraction) => {
     const focusedValue = interaction.options.getFocused();
     const user = Scheduler.instance.getUser(interaction.user);
     const events = Object.values(user.events);
+    const eventNames = events.map(event => event.name);
+    const filtered = eventNames.filter(name => name.startsWith(focusedValue));
+
+    // https://stackoverflow.com/questions/73449317/how-to-add-more-than-25-choices-to-autocomplete-option-discord-js-v14
+    let options;
+    if (filtered.length > 25) {
+        options = filtered.slice(0, 25);
+    } else {
+        options = filtered;
+    }
+
+    await interaction.respond(
+        options.map(choice => ({ name: choice, value: choice })),
+    );
+};
+
+export const organizingEventAutocomplete = async (interaction: AutocompleteInteraction) => {
+    const focusedValue = interaction.options.getFocused();
+    const user = Scheduler.instance.getUser(interaction.user);
+    const events = Object.values(user.organizingEvents);
     const eventNames = events.map(event => event.name);
     const filtered = eventNames.filter(name => name.startsWith(focusedValue));
 

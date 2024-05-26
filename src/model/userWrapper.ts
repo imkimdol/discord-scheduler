@@ -37,10 +37,11 @@ export default class UserWrapper {
         return '<@' + this.user.id + '>';
     };
 
-    getEventFromName(eventName: string): SchedulerEvent | null {
+    getEventFromName(eventName: string, organizing: boolean = false): SchedulerEvent | null {
         let earliestEvent: SchedulerEvent | null = null;
         
-        const eventsArray = Object.values(this.events);
+        const events = organizing ? this.organizingEvents : this.events;
+        const eventsArray = Object.values(events);
         eventsArray.forEach((event: SchedulerEvent) => {
             if (event.name !== eventName) return;
 
@@ -50,10 +51,11 @@ export default class UserWrapper {
 
         return earliestEvent;
     };
-    getLatestEvent(): SchedulerEvent | null {
+    getLatestEvent(organizing: boolean = false): SchedulerEvent | null {
         let latestEvent: SchedulerEvent | null = null;
         
-        const eventsArray = Object.values(this.events);
+        const events = organizing ? this.organizingEvents : this.events;
+        const eventsArray = Object.values(events);
         eventsArray.forEach((event: SchedulerEvent) => {
             if (!latestEvent) latestEvent = event;
             else if (event.created.isAfter(latestEvent.created)) latestEvent = event;

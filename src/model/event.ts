@@ -34,7 +34,7 @@ export default class SchedulerEvent {
     private set organizer(value: UserWrapper) { this._organizer = value; };
     private set suggestedTimes(value: SuggestedTime[]) { this._suggestedTimes = value; };
     private set created(value: Moment) { this._created = value; };
-    private set chosenTime(value: Moment) { this._chosenTime = value; };
+    public set chosenTime(value: Moment) { this._chosenTime = value; };
 
     constructor(name: string, organizer: UserWrapper, attendees: UserWrapper[], created: Moment) {
         this._id = uuid();
