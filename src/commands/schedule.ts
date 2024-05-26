@@ -37,7 +37,7 @@ module.exports = {
             const now = moment.utc();
             const event = new SchedulerEvent(name, user, attendees, now);
 
-            const embed = EventHelper.createEventEmbed(event);
+            const embed = EventHelper.createEventEmbed(event, user);
             const message = await interaction.channel?.send({ embeds: [embed] });
             if (message) event.message = message;
 

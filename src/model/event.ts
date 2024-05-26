@@ -5,6 +5,7 @@ import UserWrapper from './userWrapper';
 import { Moment } from 'moment-timezone';
 import Scheduler from '../scheduler';
 import { compareTimes } from '../helpers/timeHelper';
+import { createEventEmbed } from '../helpers/eventHelper';
  
 type NullableMoment = Moment | null;
 type NullableMessage = Message | null;
@@ -62,4 +63,11 @@ export default class SchedulerEvent {
             this._suggestedTimes = this._suggestedTimes.sort(compareTimes);
         }
     };
+
+    updateMessage(user: UserWrapper) {
+        if (!this.message) return;
+
+        const embed = createEventEmbed(this, user);
+        this.message.edit({ embeds: [embed] });
+    }
 };

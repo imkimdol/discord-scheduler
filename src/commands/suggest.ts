@@ -42,7 +42,7 @@ module.exports = {
             );
         },
     async execute(interaction: ChatInputCommandInteraction, client: CommandsClient) {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply();
 
         try {
             const user = Scheduler.instance.getUser(interaction.user);
@@ -72,6 +72,12 @@ module.exports = {
 
             const suggestedTime = new SuggestedTime(time, user);
             event.addSuggestedTime(suggestedTime);
+
+            try {
+                event.updateMessage(user);
+            } catch {
+                event.message = null;
+            }
 
             interaction.editReply(`Suggested time of ${momentToSimpleString(time, user.timezone)} added.`);
         } catch (err) {
