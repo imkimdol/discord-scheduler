@@ -68,6 +68,10 @@ export default class SchedulerEvent {
         }
     };
 
+    removeSuggestedTime(time: SuggestedTime) {
+        this._suggestedTimes = this._suggestedTimes.filter(t => t !== time);
+    };
+
     updateMessage(user: UserWrapper) {
         if (!this.message) return;
 
