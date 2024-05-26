@@ -8,5 +8,5 @@ export const compareTimes = (a: SuggestedTime, b: SuggestedTime): number => {
 };
 
 export const momentToSimpleString = (time: Moment, timezone: string): string => {
-    return time.tz(timezone).format('MMMM DD, hh:mm z');
+    return time.tz(timezone).format('MMMM DD, hh:mma z');
 };

@@ -70,7 +70,7 @@ export const eventStringOption = (option: SlashCommandStringOption) => {
 export const eventAutocomplete = async (interaction: AutocompleteInteraction) => {
     const focusedValue = interaction.options.getFocused();
     const user = Scheduler.instance.getUser(interaction.user);
-    const events = Object.values(user.events);
+    const events = Object.values(user.allEvents);
     const eventNames = events.map(event => event.name);
     const filtered = eventNames.filter(name => name.startsWith(focusedValue));
 

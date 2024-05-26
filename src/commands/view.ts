@@ -24,9 +24,9 @@ module.exports = {
             const eventName = interaction.options.getString('event') ?? null;
             let event: SchedulerEvent | null;
             if (!eventName) {
-                event = user.getLatestEvent(true);
+                event = user.getLatestEvent();
             } else {
-                event = user.getEventFromName(eventName, true);
+                event = user.getEventFromName(eventName);
             }
             if (!event) {
                 await interaction.editReply(`The event could not be found.`);

@@ -37,13 +37,15 @@ module.exports = {
                 return;
             }
 
-            const associatedTimes: SuggestedTime[] = [];
-            event.suggestedTimes.forEach(time => {
-                if (Object.keys(time.votes).includes(user.id)) associatedTimes.push(time);
-            });
-            const selectMenu = buildSelectMenu(user, associatedTimes);
-            const reply = await interaction.editReply({ components: [selectMenu] });
+            const suggestedTimes = event.suggestedTimes;
+            if (suggestedTimes.length === 0) {
+                await interaction.editReply(`There are no suggested times to vote for.`);
+                return;
+            }
 
+            const selectMenu = buildSelectMenu(user, suggestedTimes);
+            const reply = await interaction.editReply({ components: [selectMenu] });
+            
             let indexes: number[] = [];
             try {
                 const collectorFilter = (i: Interaction) => i.user.id === interaction.user.id;
@@ -52,8 +54,8 @@ module.exports = {
                 selectInteraction.update({ content: 'Voted.', components: [] });
             } catch {}
 
-            associatedTimes.forEach(time => time.removeVote(user));
-            indexes.forEach(i => associatedTimes[i].addVote(user));
+            suggestedTimes.forEach(time => time.removeVote(user));
+            indexes.forEach(i => suggestedTimes[i].addVote(user));
 
             try {
                 event.updateMessage(user);
@@ -64,7 +66,7 @@ module.exports = {
     },
 };
 
-const buildSelectMenu = (user: UserWrapper, associatedTimes: SuggestedTime[]) => {
+const buildSelectMenu = (user: UserWrapper, suggestedTimes: ReadonlyArray<SuggestedTime>) => {
     if (!user.timezone) throw new Error('User has no timezone.');
     const timezone = user.timezone;
 
@@ -72,9 +74,9 @@ const buildSelectMenu = (user: UserWrapper, associatedTimes: SuggestedTime[]) =>
 		.setCustomId('vote')
 		.setPlaceholder('Vote for times:')
         .setMinValues(1)
-        .setMaxValues(associatedTimes.length);
+        .setMaxValues(suggestedTimes.length);
     
-    associatedTimes.forEach((time, index) => {
+    suggestedTimes.forEach((time, index) => {
         const option = new StringSelectMenuOptionBuilder()
             .setLabel(momentToSimpleString(time.time, timezone))
             .setDescription(`Suggested by ${time.suggester.user.displayName}`)

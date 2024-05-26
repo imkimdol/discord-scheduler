@@ -7,7 +7,7 @@ import { momentToSimpleString } from '../helpers/timeHelper';
 import SchedulerEvent from '../model/event';
 import { eventAutocomplete, eventStringOption } from '../helpers/eventHelper';
 
-const supportedDateFormats = ['ha', 'h:mm a', 'MMMM DD, h:mm a', 'YYYY/MM/DD HH:mm'];
+const supportedDateFormats = ['ha', 'h:mm a', 'MMMM DD h:mm a', 'dddd h:mm a', 'YYYY/MM/DD HH:mm'];
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,7 +15,7 @@ module.exports = {
         .setDescription('Suggest a new time. An event can only have up to 25 timeslots.')
         .addStringOption(option => 
             option.setName('time')
-                .setDescription('The suggested time. Use formats "2pm", "2:00 pm", "March 25, 2:00 pm", or "2024/03/25 14:00".')
+                .setDescription('The suggested time. Use formats "2pm", "2:00 pm", "Monday 2:00 pm", or "March 25 2:00 pm".')
                 .setRequired(true)
         )
         .addStringOption(eventStringOption)

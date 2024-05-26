@@ -32,7 +32,7 @@ module.exports = {
             const name = interaction.options.getString('name') ?? 'Unnamed Event';
             const attendeesString = interaction.options.getString('attendees') ?? '';
             
-            const attendees = await attendeesStringToSchedulerUserArray(attendeesString, client);
+            const attendees = await attendeesStringToUserWrapperArray(attendeesString, client);
             const now = moment.utc();
             const event = new SchedulerEvent(name, user, attendees, now);
 
@@ -47,15 +47,14 @@ module.exports = {
     }
 };
 
-const attendeesStringToSchedulerUserArray = async (attendeesString: string, client: CommandsClient): Promise<UserWrapper[]> => {
+const attendeesStringToUserWrapperArray = async (attendeesString: string, client: CommandsClient): Promise<UserWrapper[]> => {
     const attendees = [] as UserWrapper[];
 
-    for (const attendeeString of attendeesString.replace(' ', '').split(',')) {
+    for (const attendeeString of attendeesString.replaceAll(' ', '').split(',')) {
         if (UserWrapper.mentionRegex.test(attendeeString)) {
             const attendeeId = attendeeString.substring(2, attendeeString.length-1);
-            console.log(attendeeId);
-            const user = await client.users.fetch(attendeeId) as User;
-            const extendedUser = new UserWrapper(user);
+            const user = await client.users.fetch(attendeeId);
+            const extendedUser = Scheduler.instance.getUser(user);
             attendees.push(extendedUser);
         }
     }
