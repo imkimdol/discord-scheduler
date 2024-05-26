@@ -16,6 +16,7 @@ export default class UserWrapper {
     public get user(): User { return this._user; };
     public get id(): string { return this._user.id; };
     public get timezone(): NullableString { return this._timezone; };
+    public get events(): Readonly<SchedulerEventDictionary> { return {...this._attendingEvents, ...this._organizingEvents} };
     public get organizingEvents(): Readonly<SchedulerEventDictionary> { return this._organizingEvents; };
     public get attendingEvents(): Readonly<SchedulerEventDictionary> { return this._attendingEvents; };
 
@@ -35,6 +36,30 @@ export default class UserWrapper {
         return '<@' + this.user.id + '>';
     };
 
+    getEventFromName(eventName: string): SchedulerEvent | null {
+        let earliestEvent: SchedulerEvent | null = null;
+        
+        const eventsArray = Object.values(this.events);
+        eventsArray.forEach((event: SchedulerEvent) => {
+            if (event.name !== eventName) return;
+
+            if (!earliestEvent) earliestEvent = event;
+            else if (event.created.isBefore(earliestEvent.created)) earliestEvent = event;
+        });
+
+        return earliestEvent;
+    };
+    getLatestEvent(): SchedulerEvent | null {
+        let latestEvent: SchedulerEvent | null = null;
+        
+        const eventsArray = Object.values(this.events);
+        eventsArray.forEach((event: SchedulerEvent) => {
+            if (!latestEvent) latestEvent = event;
+            else if (event.created.isAfter(latestEvent.created)) latestEvent = event;
+        });
+
+        return latestEvent;
+    }
     addOrganizingEvent(event: SchedulerEvent): void {
         this._organizingEvents[event.id] = event;
     };

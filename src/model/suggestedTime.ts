@@ -14,9 +14,9 @@ export default class SuggestedTime {
     private set suggester(value: UserWrapper) { this._suggester = value; };
     private set votes(value: UserWrapper[]) { this.votes = value; };
 
-    constructor(time: Moment, suggester: UserWrapper, votes: UserWrapper[]) {
+    constructor(time: Moment, suggester: UserWrapper) {
         this._time = time;
         this._suggester = suggester;
-        this._votes = votes;
+        this._votes = [suggester];
     };
 };

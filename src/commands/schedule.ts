@@ -4,6 +4,7 @@ import SchedulerEvent from '../model/event';
 import Scheduler from '../scheduler';
 import * as EventHelper from '../helpers/eventHelper';
 import UserWrapper from '../model/userWrapper';
+import moment from 'moment';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -33,7 +34,8 @@ module.exports = {
             const attendeesString = interaction.options.getString('attendees') ?? '';
             
             const attendees = await attendeesStringToSchedulerUserArray(attendeesString, client);
-            const event = new SchedulerEvent(name, user, attendees);
+            const now = moment.utc();
+            const event = new SchedulerEvent(name, user, attendees, now);
 
             const embed = EventHelper.createEventEmbed(event);
             const message = await interaction.channel?.send({ embeds: [embed] });
