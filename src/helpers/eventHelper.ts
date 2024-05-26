@@ -1,8 +1,9 @@
-import { EmbedBuilder, User } from "discord.js";
+import { AutocompleteInteraction, EmbedBuilder, SlashCommandStringOption, User } from "discord.js";
 import SchedulerEvent from "../model/event";
 import UserWrapper from "../model/userWrapper";
 import SuggestedTime from "../model/suggestedTime";
 import { momentToSimpleString } from "./timeHelper";
+import Scheduler from "../scheduler";
 
 type Field = { name: string, value: string, inline?: boolean };
 
@@ -26,7 +27,8 @@ const suggestedTimesToFields = (times: ReadonlyArray<SuggestedTime>, timezone: s
         const inline = true;
 
         let value = 'Votes:';
-        time.votes.forEach(vote => {
+        const votesArray = Object.values(time.votes);
+        votesArray.forEach(vote => {
             value += '\n';
             value += vote.toMention();
         });
@@ -57,4 +59,30 @@ export const createEventEmbed = (event: SchedulerEvent, user: UserWrapper): Embe
     embed.setFooter({ text: timeInstructions });
 
     return embed;
+};
+
+export const eventStringOption = (option: SlashCommandStringOption) => {
+    return option.setName('event')
+        .setDescription('Name of the event. If names clash, the earliest created event is used.')
+        .setAutocomplete(true)
+};
+
+export const eventAutocomplete = async (interaction: AutocompleteInteraction) => {
+    const focusedValue = interaction.options.getFocused();
+    const user = Scheduler.instance.getUser(interaction.user);
+    const events = Object.values(user.events);
+    const eventNames = events.map(event => event.name);
+    const filtered = eventNames.filter(name => name.startsWith(focusedValue));
+
+    // https://stackoverflow.com/questions/73449317/how-to-add-more-than-25-choices-to-autocomplete-option-discord-js-v14
+    let options;
+    if (filtered.length > 25) {
+        options = filtered.slice(0, 25);
+    } else {
+        options = filtered;
+    }
+
+    await interaction.respond(
+        options.map(choice => ({ name: choice, value: choice })),
+    );
 };
