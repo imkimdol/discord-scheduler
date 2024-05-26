@@ -6,7 +6,7 @@ import SchedulerEvent from '../model/event';
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('delete_event')
+        .setName('delete')
         .setDescription('Delete an event that you are organizing.')
         .addStringOption(eventStringOption)
     ,
