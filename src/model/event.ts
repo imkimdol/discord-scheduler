@@ -52,6 +52,10 @@ export default class SchedulerEvent {
     };
 
     delete() {
+        try {
+            this.message?.delete();
+        } catch {}
+
         Scheduler.instance.removeEvent(this);
         this.organizer.removeOrganizingEvent(this);
         this.attendees.forEach(a => a.removeAttendingEvent(this));
@@ -69,5 +73,5 @@ export default class SchedulerEvent {
 
         const embed = createEventEmbed(this, user);
         this.message.edit({ embeds: [embed] });
-    }
+    };
 };
