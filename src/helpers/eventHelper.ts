@@ -38,22 +38,23 @@ const suggestedTimesToFields = (times: ReadonlyArray<SuggestedTime>, timezone: s
 }
 
 export const createEventEmbed = (event: SchedulerEvent, user: UserWrapper): EmbedBuilder => {
+    if (!user.timezone) throw new Error(`User \`${user.id}\` has no timezone.`);
     const embed = new EmbedBuilder();
 
     const attendees = 'Attendees: ' + attendeesArrayToString(event.attendees);
-    let timeInstructions: string;
+    let timeInstructions = '';
+    let chosenTime = '';
     if (!event.chosenTime) {
-        timeInstructions = 'Time is currently undecided. Use `/suggest` to suggest a time or `/vote` to vote for a suggested time.';
+        timeInstructions = 'Time is currently undecided. Use /suggest to suggest a time or /vote to vote for a suggested time.\n';
     } else {
-        timeInstructions = `Time is set to ...`;
+        chosenTime = `\nTime is set to \`${momentToSimpleString(event.chosenTime, user.timezone)}\``;
     }
-    const description = `An event organized by <@${event.organizer.id}>.\n${attendees}\n${timeInstructions}`;
-    if (!user.timezone) throw new Error(`User \`${user.id}\` has no timezone.`);
+    const description = `An event organized by <@${event.organizer.id}>.${chosenTime}\n${attendees}`;
 
     embed.setTitle(event.name);
     embed.setDescription(description);
     embed.setFields(suggestedTimesToFields(event.suggestedTimes, user.timezone));
-    embed.setFooter({ text: `ID: ${event.id}` });
+    embed.setFooter({ text: timeInstructions });
 
     return embed;
 };

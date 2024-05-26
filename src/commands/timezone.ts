@@ -15,9 +15,9 @@ module.exports = {
                 .setAutocomplete(true)
         ),
     async autocomplete(interaction: AutocompleteInteraction) {
-        const focusedValue = interaction.options.getFocused();
+        const focusedValue = interaction.options.getFocused().toLowerCase();
 		const choices = moment.tz.names();
-		const filtered = choices.filter(choice => choice.startsWith(focusedValue));
+		const filtered = choices.filter(choice => choice.toLowerCase().includes(focusedValue));
 
         // https://stackoverflow.com/questions/73449317/how-to-add-more-than-25-choices-to-autocomplete-option-discord-js-v14
         let options;
@@ -40,7 +40,7 @@ module.exports = {
             const timezone = interaction.options.getString('timezone') ?? '';
             user.timezone = timezone;
 
-            interaction.editReply(`Timezone set to ${timezone}.`);
+            interaction.editReply(`Timezone set to \`${timezone}\`.`);
         } catch (err) {
             console.error(err);
         }

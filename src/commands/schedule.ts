@@ -18,7 +18,6 @@ module.exports = {
         .addStringOption(option =>
             option.setName('attendees')
                 .setDescription('Attendees for the event. Enter comma-separated mentioned users.')
-                .setRequired(true)
         ),
     async execute(interaction: ChatInputCommandInteraction, client: CommandsClient) {
         await interaction.deferReply({ ephemeral: true });

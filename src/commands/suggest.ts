@@ -6,7 +6,7 @@ import SuggestedTime from '../model/suggestedTime';
 import { momentToSimpleString } from '../helpers/timeHelper';
 import SchedulerEvent from '../model/event';
 
-const supportedDateFormats = ['MMMM DD, h:mm a', 'YYYY/MM/DD HH:mm'];
+const supportedDateFormats = ['h:mm a', 'MMMM DD, h:mm a', 'YYYY/MM/DD HH:mm'];
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,7 +14,7 @@ module.exports = {
         .setDescription('Suggest a new time. An event can only have up to 25 timeslots.')
         .addStringOption(option => 
             option.setName('time')
-                .setDescription('The suggested time. Use formats "March 25, 2:05 pm" or "2024/03/25 14:05".')
+                .setDescription('The suggested time. Use formats "2:05 pm", "March 25, 2:05 pm", or "2024/03/25 14:05".')
                 .setRequired(true)
         )
         .addStringOption(option =>
@@ -42,7 +42,7 @@ module.exports = {
             );
         },
     async execute(interaction: ChatInputCommandInteraction, client: CommandsClient) {
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
 
         try {
             const user = Scheduler.instance.getUser(interaction.user);
@@ -79,7 +79,7 @@ module.exports = {
                 event.message = null;
             }
 
-            interaction.editReply(`Suggested time of ${momentToSimpleString(time, user.timezone)} added.`);
+            interaction.editReply(`Suggested time of \`${momentToSimpleString(time, user.timezone)}\` added to \`${event.name}.\``);
         } catch (err) {
             console.error(err);
         }
