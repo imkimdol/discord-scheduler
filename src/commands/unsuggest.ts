@@ -55,7 +55,7 @@ module.exports = {
                 indexes = selectInteraction.values.map(v => Number.parseInt(v));
                 const toRemove = suggestedTimes[indexes[0]];
                 event.removeSuggestedTime(toRemove);
-                selectInteraction.update({ content: `Removed time \`${momentToSimpleString(toRemove.time, user.timezone)}\` from event ${event.name}.`, components: [] });
+                selectInteraction.update({ content: `Removed time \`${momentToSimpleString(toRemove.time, user.timezone)}\` from event \`${event.name}\`.`, components: [] });
             } catch {}
 
             try {

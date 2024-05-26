@@ -38,6 +38,11 @@ module.exports = {
             }
             
             const suggestedTimes = event.suggestedTimes;
+            if (suggestedTimes.length === 0) {
+                await interaction.editReply(`There are no suggested times to choose.`);
+                return;
+            }
+
             const selectMenu = buildSelectMenu(user, suggestedTimes);
             const reply = await interaction.editReply({ components: [selectMenu] });
 
@@ -46,9 +51,9 @@ module.exports = {
                 const collectorFilter = (i: Interaction) => i.user.id === interaction.user.id;
                 const selectInteraction = await reply.awaitMessageComponent({ filter: collectorFilter, time: 300_000 }) as StringSelectMenuInteraction;
                 indexes = selectInteraction.values.map(v => Number.parseInt(v));
-                const chosenTime = suggestedTimes[0].time;
+                const chosenTime = suggestedTimes[indexes[0]].time;
                 event.chosenTime = chosenTime;
-                selectInteraction.update({ content: `Selected time \`${momentToSimpleString(chosenTime, user.timezone)}\` for event ${event.name}.`, components: [] });
+                selectInteraction.update({ content: `${user.toMention} decided \`${event.name}\` should be held at \`${momentToSimpleString(chosenTime, user.timezone)}\`.`, components: [] });
             } catch {}
 
             try {
