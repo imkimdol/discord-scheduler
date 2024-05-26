@@ -57,9 +57,7 @@ module.exports = {
 
             try {
                 event.updateMessage(user);
-            } catch {
-                event.message = null;
-            }
+            } catch {}
         } catch (err) {
             console.error(err);
         }

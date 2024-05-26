@@ -55,11 +55,9 @@ module.exports = {
 
             try {
                 event.updateMessage(user);
-            } catch {
-                event.message = null;
-            }
+            } catch {}
 
-            interaction.editReply(`${user.toMention} suggested a time for \`${event.name}\`: \`${momentToSimpleString(time, user.timezone)}\``);
+            interaction.editReply(`${user.toMention()} suggested a time for \`${event.name}\`: \`${momentToSimpleString(time, user.timezone)}\``);
         } catch (err) {
             console.error(err);
         }

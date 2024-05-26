@@ -53,14 +53,12 @@ module.exports = {
                 indexes = selectInteraction.values.map(v => Number.parseInt(v));
                 const chosenTime = suggestedTimes[indexes[0]].time;
                 event.chosenTime = chosenTime;
-                selectInteraction.update({ content: `${user.toMention} decided \`${event.name}\` should be held at \`${momentToSimpleString(chosenTime, user.timezone)}\`.`, components: [] });
+                selectInteraction.update({ content: `${user.toMention()} decided \`${event.name}\` should be held at \`${momentToSimpleString(chosenTime, user.timezone)}\`.`, components: [] });
             } catch {}
 
             try {
                 event.updateMessage(user);
-            } catch {
-                event.message = null;
-            }
+            } catch {}
         } catch (err) {
             console.error(err);
         }
